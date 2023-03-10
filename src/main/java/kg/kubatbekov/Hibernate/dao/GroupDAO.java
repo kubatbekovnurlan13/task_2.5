@@ -1,61 +1,91 @@
 package kg.kubatbekov.Hibernate.dao;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import kg.kubatbekov.Hibernate.configuration.HibernateSessionFactory;
 import kg.kubatbekov.Hibernate.daoInterface.DAO;
 import kg.kubatbekov.Hibernate.model.Group;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class GroupDAO implements DAO<Group> {
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final SessionFactory sessionFactory;
 
-    @Transactional
-    @Override
-    public void save(Group group) {
-        entityManager.persist(group);
+    @Autowired
+    public GroupDAO(HibernateSessionFactory hibernateSessionFactory) {
+        this.sessionFactory = hibernateSessionFactory.getSessionFactory();
     }
 
-    @Transactional
+    @Override
+    public void save(Group group) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.persist(group);
+
+        session.getTransaction().commit();
+    }
+
     @Override
     public Optional<Group> getByName(String name) {
-        Group group =
-                entityManager.createQuery("select g from Group g where g.group_name = :group_name", Group.class)
-                        .setParameter("group_name", name)
-                        .getSingleResult();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Group group = session.createQuery("select g from Group g where g.group_name = :group_name", Group.class)
+                .setParameter("group_name", name)
+                .getSingleResult();
+
+        session.getTransaction().commit();
         return Optional.ofNullable(group);
     }
 
-    @Transactional
     @Override
     public List<Group> getAll() {
-        return entityManager.createQuery("select g from Group g", Group.class)
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        List<Group> groups = session.createQuery("select g from Group g", Group.class)
                 .getResultList();
+
+        session.getTransaction().commit();
+        return groups;
     }
 
-    @Transactional
     public List<Group> findLessOrEqualStudentCount(int count) {
-        return entityManager.createQuery("select g from Group g", Group.class)
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        List<Group> groups = session.createQuery("select g from Group g", Group.class)
                 .getResultStream()
                 .filter(group -> group.getStudents().size() <= count & group.getStudents().size() != 0)
                 .toList();
+
+        session.getTransaction().commit();
+        return groups;
     }
 
-    @Transactional
     @Override
     public void update(Group group) {
-        entityManager.merge(group);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.merge(group);
+
+        session.getTransaction().commit();
     }
 
-    @Transactional
     @Override
     public void deleteById(int group_id) {
-        Group group = entityManager.find(Group.class, group_id);
-        entityManager.remove(group);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Group group = session.find(Group.class, group_id);
+        session.remove(group);
+
+        session.getTransaction().commit();
     }
 }
