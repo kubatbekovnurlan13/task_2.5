@@ -1,8 +1,7 @@
 package kg.kubatbekov.Hibernate.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Group {
+
     @Id
     @Column(name = "group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,11 @@ public class Group {
     }
 
     public Group(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Group(int groupId, String groupName) {
+        this.groupId = groupId;
         this.groupName = groupName;
     }
 

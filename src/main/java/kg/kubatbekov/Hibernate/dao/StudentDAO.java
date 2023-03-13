@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,13 +24,9 @@ public class StudentDAO implements DAO<Student> {
     @Override
     public List<Student> getAll() {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        List<Student> students = session.createQuery("select s from Student s", Student.class)
+        return session.createQuery("select s from Student s", Student.class)
                 .getResultList();
-
-        session.getTransaction().commit();
-        return students;
     }
 
     @Override
@@ -45,14 +42,12 @@ public class StudentDAO implements DAO<Student> {
     @Override
     public Optional<Student> getByName(String name) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         Student student =
                 session.createQuery("select s from Student s where s.firstName = :first_name", Student.class)
                         .setParameter("first_name", name)
                         .getSingleResult();
 
-        session.getTransaction().commit();
         return Optional.ofNullable(student);
     }
 

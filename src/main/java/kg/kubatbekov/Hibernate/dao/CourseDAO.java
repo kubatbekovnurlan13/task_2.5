@@ -36,27 +36,19 @@ public class CourseDAO implements DAO<Course> {
 
     public List<Student> getAllStudents(String courseName) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        List<Student> students = session.createQuery("select c from Course c where c.courseName = :course_name", Course.class)
+        return session.createQuery("select c from Course c where c.courseName = :course_name", Course.class)
                 .setParameter("course_name", courseName)
                 .getSingleResult()
                 .getStudents();
-
-        session.getTransaction().commit();
-        return students;
     }
 
     @Override
     public List<Course> getAll() {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        List<Course> courses = session.createQuery("select c from Course c", Course.class)
+        return session.createQuery("select c from Course c", Course.class)
                 .getResultList();
-
-        session.getTransaction().commit();
-        return courses;
     }
 
     @Override
@@ -106,13 +98,11 @@ public class CourseDAO implements DAO<Course> {
     @Override
     public Optional<Course> getByName(String name) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
         Course course = session
-                .createQuery("select c from Course c where c.courseId = :course_name", Course.class)
+                .createQuery("select c from Course c where c.courseName = :course_name", Course.class)
                 .setParameter("course_name", name)
                 .getSingleResult();
-        session.getTransaction().commit();
 
         return Optional.ofNullable(course);
     }

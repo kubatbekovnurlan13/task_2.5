@@ -33,39 +33,29 @@ public class GroupDAO implements DAO<Group> {
     @Override
     public Optional<Group> getByName(String name) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        Group group = session.createQuery("select g from Group g where g.group_name = :group_name", Group.class)
+        Group group = session.createQuery("select g from Group g where g.groupName = :group_name", Group.class)
                 .setParameter("group_name", name)
                 .getSingleResult();
 
-        session.getTransaction().commit();
         return Optional.ofNullable(group);
     }
 
     @Override
     public List<Group> getAll() {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        List<Group> groups = session.createQuery("select g from Group g", Group.class)
+        return session.createQuery("select g from Group g", Group.class)
                 .getResultList();
-
-        session.getTransaction().commit();
-        return groups;
     }
 
     public List<Group> findLessOrEqualStudentCount(int count) {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
 
-        List<Group> groups = session.createQuery("select g from Group g", Group.class)
+        return session.createQuery("select g from Group g", Group.class)
                 .getResultStream()
                 .filter(group -> group.getStudents().size() <= count & group.getStudents().size() != 0)
                 .toList();
-
-        session.getTransaction().commit();
-        return groups;
     }
 
     @Override

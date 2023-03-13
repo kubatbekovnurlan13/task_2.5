@@ -1,6 +1,5 @@
 package kg.kubatbekov.Hibernate.service;
 
-
 import kg.kubatbekov.Hibernate.dao.StudentDAO;
 import kg.kubatbekov.Hibernate.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,7 @@
 package kg.kubatbekov.Hibernate.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,12 +11,15 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Course {
+
     @Id
     @Column(name = "course_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int courseId;
+
     @Column(name = "course_name")
     private String courseName;
+
     @Column(name = "course_description")
     private String courseDescription;
 
@@ -29,6 +31,12 @@ public class Course {
     private List<Student> students;
 
     public Course() {
+    }
+
+    public Course(int courseId, String courseName, String courseDescription) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
     }
 
     public Course(String courseName, String courseDescription) {

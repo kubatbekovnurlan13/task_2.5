@@ -34,11 +34,6 @@ public class CourseService {
         return courseDAO.getAll();
     }
 
-    public List<Student> getAllStudents(String courseName) {
-        return courseDAO.getAllStudents(courseName);
-    }
-
-
     public Optional<Course> getByName(String name) {
         return courseDAO.getByName(name);
     }
